@@ -223,7 +223,7 @@ def render_images(r_num, f=folder_num) -> int:
         bpy.context.scene.frame_set(frame)
 
         # Save image
-        bpy.context.scene.render.filepath = join(output_dir.format(f), 'render{0:0>5}.png'.format(r_num))
+        bpy.context.scene.render.filepath = join(output_dir, 'render{0:0>5}.png'.format(r_num))
         bpy.ops.render.render(write_still=True)
         r_num += 1
 
