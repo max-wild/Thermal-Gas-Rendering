@@ -249,6 +249,25 @@ def init_values():
     scenes = args['repeats']
 
 
+def init_gpu():
+    
+    bpy.data.scenes[0].render.engine = 'CYCLES'
+
+    # Set the device_type
+    bpy.context.preferences.addons[
+        'cycles'
+    ].preferences.compute_device_type = 'CUDA' # or 'OPENCL'
+
+    # Set the device and feature set
+    bpy.context.scene.cycles.device = 'GPU'
+
+    # Blender automatically detects GPU device with get_devices()
+    bpy.context.preferences.addons["cycles"].preferences.get_devices()
+    # print(bpy.context.preferences.addons["cycles"].preferences.compute_device_type)
+    for d in bpy.context.preferences.addons["cycles"].preferences.devices:
+        d["use"] = 1 # Using all devices, include GPU and CPU
+
+
 def start_render():
     """
     Frees the smoke data, sets up new random reconfiguration, then preps to rebake / re-export
@@ -261,6 +280,8 @@ def start_render():
     assert (domain.modifiers["Fluid"].domain_settings.cache_frame_end >= fp_scene * 20)
     render_num = 1
 
+    init_gpu()
+    
     print(f'\nStarting to render {scenes * fp_scene} gas images...')
 
     for i in range(scenes):
@@ -283,7 +304,7 @@ def start_render():
         # RENDER
         render_num = render_images(render_num)
 
-    print(f'Finished producing {scenes} render(s), time {(datetime.now() - start_time).total_seconds()}\n')
+    print(f'Finished producing {scenes * fp_scene} render(s), time {(datetime.now() - start_time).total_seconds()}\n')
 
 
 if __name__ == '__main__':
