@@ -250,37 +250,31 @@ def init_values():
 
 
 def init_gpu():
-    
-    bpy.data.scenes[0].render.engine = 'CYCLES'
 
-    # Set the device_type
-    bpy.context.preferences.addons[
-        'cycles'
-    ].preferences.compute_device_type = 'CUDA'  # or 'OPENCL'
+    import re
+    scene = bpy.context.scene
+    scene.cycles.device = 'GPU'
+    prefs = bpy.context.preferences
+    prefs.addons['cycles'].preferences.get_devices()
+    cprefs = prefs.addons['cycles'].preferences
+    print(cprefs)
 
-    # Set the device and feature set
-    bpy.context.scene.cycles.device = 'GPU'
+    # Attempt to set GPU device types if available
+    for compute_device_type in ('CUDA', 'OPENCL', 'NONE'):
+        try:
+            cprefs.compute_device_type = compute_device_type
+            print('Device found', compute_device_type)
+            break
+        except TypeError:
+            pass
 
-    # Blender automatically detects GPU device with get_devices()
-    cuda_devices = bpy.context.preferences.addons["cycles"].preferences.get_devices()
-    print(cuda_devices)
-
-    # print(bpy.context.preferences.addons["cycles"].preferences.compute_device_type)
-    for d in bpy.context.preferences.addons["cycles"].preferences.devices:
-        d["use"] = 1  # Using all devices, include GPU and CPU
-
-    try:
-        bpy.context.preferences.addons['cycles'].preferences.compute_device_type = "CUDA"
-    except TypeError:
-        print("Could not enable CUDA")
-
-    if hasattr(cuda_devices, '__iter__'):
-        if hasattr(cuda_devices[0], '__iter__'):
-            for device in cuda_devices[0]:
-                print(f'Activating {device.name}')
-                device.use = True
-
-    print(f'Is there a valid GPU: {bpy.context.preferences.addons["__package__"].preferences.has_active_device()}')
+    # Enable all CPU and GPU devices
+    for device in cprefs.devices:
+        if not re.match('intel', device.name, re.I):
+            print('Activating', device)
+            device.use = True
+        else:
+            device.use = False
 
 
 def start_render():
