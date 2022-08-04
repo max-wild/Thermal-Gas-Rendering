@@ -262,7 +262,9 @@ def init_gpu():
     bpy.context.scene.cycles.device = 'GPU'
 
     # Blender automatically detects GPU device with get_devices()
-    cuda_devices = bpy.context.preferences.addons["cycles"].preferences.get_devices()[0]
+    cuda_devices = bpy.context.preferences.addons["cycles"].preferences.get_devices()
+    print(cuda_devices)
+
     # print(bpy.context.preferences.addons["cycles"].preferences.compute_device_type)
     for d in bpy.context.preferences.addons["cycles"].preferences.devices:
         d["use"] = 1  # Using all devices, include GPU and CPU
@@ -272,9 +274,11 @@ def init_gpu():
     except TypeError:
         print("Could not enable CUDA")
 
-    for device in cuda_devices:
-        print(f'Activating {device.name}')
-        device.use = True
+    if hasattr(cuda_devices, '__iter__'):
+        if hasattr(cuda_devices[0], '__iter__'):
+            for device in cuda_devices[0]:
+                print(f'Activating {device.name}')
+                device.use = True
 
     print(f'Is there a valid GPU: {bpy.context.preferences.addons[__package__].preferences.has_active_device()}')
 
