@@ -280,7 +280,7 @@ def init_gpu():
                 print(f'Activating {device.name}')
                 device.use = True
 
-    print(f'Is there a valid GPU: {bpy.context.preferences.addons[__package__].preferences.has_active_device()}')
+    print(f'Is there a valid GPU: {bpy.context.preferences.addons["__package__"].preferences.has_active_device()}')
 
 
 def start_render():
