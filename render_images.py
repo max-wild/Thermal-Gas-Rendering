@@ -250,6 +250,11 @@ def init_values():
 
 
 def init_gpu():
+    """
+    Ensures that blender is using Google Colab's provided GPU
+
+    Code taken from "donmahallem" in their GitHub project colab_blender!
+    """
 
     import re
     scene = bpy.context.scene
@@ -275,6 +280,8 @@ def init_gpu():
             device.use = True
         else:
             device.use = False
+
+    # bpy.ops.render.render(True)
 
 
 def start_render():
