@@ -13,7 +13,6 @@ To generate 128x128 pixel thermal images of gas:
  2. Update the Python parameters at the top (output directory and amount of gas renders) if necessary
  3. Ensure that Colab's GPU is enabled by going to "Edit" -> "Notebook settings" at the top and setting "Hardware accelerator" to GPU
  4. At the top, go to "Runtime" and select "Run all"
- - Note; in the first run-through, execution may pause in the final cell. If this happens, interrupt execution and and restart the running of the last cell
 
 ## Background
 
@@ -30,4 +29,5 @@ By default, the renders will be saved to your google drive account. In the Pytho
 <br>
 
 Thanks!   
--Max
+
+Max
